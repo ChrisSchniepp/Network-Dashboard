@@ -1,0 +1,5 @@
+scapy
+mac_vendor_lookup
+flask
+python-nmap
+python-dotenv

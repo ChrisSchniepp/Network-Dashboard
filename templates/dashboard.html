@@ -1,0 +1,121 @@
+{% extends "layout.html" %}
+
+{% block head %}
+    <title>Network Dashboard</title>
+{% endblock %}
+
+{% block content %}
+    <div class="references" style="text-align: center;">
+        <button id="yellow-button" onclick="window.open('{{ router_url }}', '_blank')">Open Router Admin</button>
+        <button id="yellow-button" onclick="window.open('{{ twingate_url }}', '_blank')">Twingate Overview</button>
+        <button id="yellow-button" onclick="window.open('{{ nextdns_url }}', '_blank')">NextDNS Analytics</button>
+    </div>
+    <h1>Connected Devices</h1>
+    <div id="device-list">
+        {% if not known_devices and not semi_known_devices and not unknown_devices %}
+            <p>No devices found on the network. Please click "Rescan Network" to start scanning.</p>
+        {% endif %}
+        <h2>Known Devices</h2>
+        {% if not known_devices %}
+            <p>No known devices found. These are devices with identifiable hostnames.</p>
+        {% endif %}
+        <table>
+            <thead>
+                <tr>
+                    <th>IP Address</th>
+                    <th>MAC Address</th>
+                    <th>Hostname</th>
+                    <th>Vendor</th>
+                    <th>Category</th>
+                    <th>Open Ports</th>
+                    <th>Last Seen</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="devices-table-body">
+                {% for device in known_devices %}
+                <tr>
+                    <td>{{ device.ip }}</td>
+                    <td>{{ device.mac }}</td>
+                    <td>{{ device.hostname }}</td>
+                    <td>{{ device.vendor }}</td>
+                    <td>{{ device.category }}</td>
+                    <td>{{ device.open_ports }}</td>
+                    <td>{{ device.last_seen }}</td>
+                    <td class="status-{{ device.status }}">{{ device.status }}</td>
+                    <td><button id="purple-button" onclick="window.location.href='/targeted_scan/{{ device.ip }}'">Rescan</button></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <h2>Semi-Known Devices</h2>
+        {% if not semi_known_devices %}
+            <p>No semi-known devices found. These are devices with unknown hostnames but identifiable vendors.</p>
+        {% endif %}
+        <table>
+            <thead>
+                <tr>
+                    <th>IP Address</th>
+                    <th>MAC Address</th>
+                    <th>Hostname</th>
+                    <th>Vendor</th>
+                    <th>Category</th>
+                    <th>Open Ports</th>
+                    <th>Last Seen</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="semi-known-devices-table-body">
+                {% for device in semi_known_devices %}
+                <tr>
+                    <td>{{ device.ip }}</td>
+                    <td>{{ device.mac }}</td>
+                    <td>{{ device.hostname }}</td>
+                    <td>{{ device.vendor }}</td>
+                    <td>{{ device.category }}</td>
+                    <td>{{ device.open_ports }}</td>
+                    <td>{{ device.last_seen }}</td>
+                    <td class="status-{{ device.status }}">{{ device.status }}</td>
+                    <td><button id="purple-button" onclick="window.location.href='/targeted_scan/{{ device.ip }}'">Rescan</button></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <h2>Unknown Devices</h2>
+        {% if not unknown_devices %}
+            <p>No unknown devices found. These are devices with unknown hostnames and vendors.</p>
+        {% endif %}
+        <table>
+            <thead>
+                <tr>
+                    <th>IP Address</th>
+                    <th>MAC Address</th>
+                    <th>Hostname</th>
+                    <th>Vendor</th>
+                    <th>Category</th>
+                    <th>Open Ports</th>
+                    <th>Last Seen</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="unknown-devices-table-body">
+                {% for device in unknown_devices %}
+                <tr>
+                    <td>{{ device.ip }}</td>
+                    <td>{{ device.mac }}</td>
+                    <td>{{ device.hostname }}</td>
+                    <td>{{ device.vendor }}</td>
+                    <td>{{ device.category }}</td>
+                    <td>{{ device.open_ports }}</td>
+                    <td>{{ device.last_seen }}</td>
+                    <td class="status-{{ device.status }}">{{ device.status }}</td>
+                    <td><button id="purple-button" onclick="window.location.href='/targeted_scan/{{ device.ip }}'">Rescan</button></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

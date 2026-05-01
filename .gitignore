@@ -1,0 +1,5 @@
+net/
+*.env
+__pycache__/
+*.pyc
+network.db
