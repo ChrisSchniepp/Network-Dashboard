@@ -57,7 +57,7 @@ def get_devices():
     known_hostnames = {device['hostname'] for device in known_devices if device['hostname'] and device['hostname'] != "Unknown"}
     
     # Run the scan using the imported function
-    devices = scan_and_organize("192.168.124.0/24")
+    devices = scan_and_organize(os.environ.get('NETWORK_IP_RANGE'))
     scanned_macs = []
     
     for device in devices:
