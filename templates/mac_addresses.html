@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+
+{% block head %}
+    <title>MAC Addresses</title>
+{% endblock %}
+
+{% block content %}
+    <h1>MAC Address History</h1>
+    <p>This page displays the history of MAC addresses detected on the network. It can be useful for tracking devices that have connected in the past, even if they are not currently active.</p>
+    {% if not devices %}
+        <p>No MAC address history found. Please perform a network scan to populate this data.</p>
+    {% else %}
+        <table>
+            <thead>
+                <tr>
+                    <th>IP Address</th>
+                    <th>MAC Address</th>
+                    <th>Last Seen</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for device in devices %}
+                <tr>
+                    <td>{{ device.vendor }}</td>
+                    <td style="color: red;">{{ device.mac }}</td>
+                    <td>{{ device.last_seen }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+{% endblock %}

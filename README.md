@@ -4,7 +4,7 @@
 ![Flask](https://img.shields.io/badge/flask-%23000.svg?style=for-the-badge&logo=flask&logoColor=white)
 ![SQLite](https://img.shields.io/badge/sqlite-%2307405e.svg?style=for-the-badge&logo=sqlite&logoColor=white)
 
-![Dashboard Screenshot](screenshot.png)
+![Dashboard Screenshot](static/dashboard_screenshot.png)
 
 A small web server that allows you to scan and monitor devices on your local network. Built with Python, Flask, and Nmap, featuring a Cyberpunk-inspired UI.
 
@@ -20,6 +20,7 @@ As well as the following:
     *NOTE: If you install Npcap with Nmap, this step is not needed
 
 3. Python virtual environment (recommended):
+    *NOTE: I used the name 'net'
 ```bash
 python -m venv venv_name
 venv_name\Scripts\activate
@@ -33,7 +34,7 @@ You also need to set up an environment file to add any urls you want to use but 
 
 (Example .env file)
 ```env
-NETWORK_IP_RANGE=192.168.1.0/24
+NETWORK_IP_RANGE='192.168.1.0/24'
 ROUTER_ADMIN_URL=http://192.168.1.1
 TWINGATE_URL=https://XXXXX.twingate.com/networks/overview
 NEXTDNS_URL=https://my.nextdns.io/XXXXX/analytics

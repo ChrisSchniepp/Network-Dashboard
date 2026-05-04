@@ -11,6 +11,10 @@ DB = "network.db"
 
 app = Flask(__name__)
 
+######################
+## Helper Functions ##
+######################
+
 def ip_collate(ip1, ip2):
     """Custom collation function to sort IP addresses correctly."""
     try:
@@ -25,8 +29,8 @@ def ip_collate(ip1, ip2):
         if ip1 > ip2: return 1
         return 0
 
-# Connect to Database
 def get_db_connection():
+    """Establish a connection to the SQLite database with the custom IP collation."""
     conn = sqlite3.connect(DB)
     conn.create_collation("IP_CMP", ip_collate)
     conn.execute("PRAGMA foreign_keys = ON")
@@ -45,6 +49,10 @@ def error_handler():
 def index():
     """Redirect the root URL to the dashboard."""
     return redirect(url_for('dashboard'))
+
+#################
+## Main Routes ##
+#################
 
 @app.route('/scan_devices', methods=['GET'])
 def get_devices():
@@ -123,6 +131,39 @@ def dashboard():
 
     return render_template('dashboard.html', known_devices=known_devices, semi_known_devices=semi_known_devices, unknown_devices=unknown_devices, router_url=router_url, twingate_url=twingate_url, nextdns_url=nextdns_url)
 
+
+@app.route('/device_info/<ip>', methods=['GET'])
+def device_info(ip):
+    conn = get_db_connection()
+    device = conn.execute("SELECT * FROM devices WHERE ip = ?", (ip,)).fetchone()
+    conn.close()
+    if not device:
+        return redirect(url_for('error_handler', message="Device not found."))
+    return render_template('device_info.html', device=device)
+
+######################
+## MAC Address Page ##
+######################
+
+@app.route('/mac_addresses', methods=['GET'])
+def mac_addresses():
+    conn = get_db_connection()
+    devices = conn.execute("SELECT mac, vendor, last_seen FROM devices WHERE mac IS NOT NULL ORDER BY vendor COLLATE NOCASE ASC").fetchall()
+    conn.close()
+    return render_template('mac_addresses.html', devices=devices)
+
+######################
+## Open Ports Page ##
+######################
+
+@app.route('/open_ports', methods=['GET'])
+def open_ports():
+    conn = get_db_connection()
+    devices = conn.execute("SELECT open_ports, category FROM devices WHERE open_ports IS NOT NULL ORDER BY category COLLATE NOCASE ASC").fetchall()
+    conn.close()
+    return render_template('open_ports.html', devices=devices)
+
+######################
 
 
 if __name__ == "__main__":

@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+
+{% block head %}
+    <title>Open Ports</title>
+{% endblock %}
+
+{% block content %}
+    <h1>Open Ports</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Open Ports</th>
+                <th>Category</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for device in devices %}
+            <tr>
+                <td>{{ device.open_ports }}</td>
+                <td>{{ device.category }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

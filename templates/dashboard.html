@@ -23,11 +23,9 @@
             <thead>
                 <tr>
                     <th>IP Address</th>
-                    <th>MAC Address</th>
                     <th>Hostname</th>
                     <th>Vendor</th>
                     <th>Category</th>
-                    <th>Open Ports</th>
                     <th>Last Seen</th>
                     <th>Status</th>
                     <th>Action</th>
@@ -37,14 +35,17 @@
                 {% for device in known_devices %}
                 <tr>
                     <td>{{ device.ip }}</td>
-                    <td>{{ device.mac }}</td>
                     <td>{{ device.hostname }}</td>
                     <td>{{ device.vendor }}</td>
                     <td>{{ device.category }}</td>
-                    <td>{{ device.open_ports }}</td>
                     <td>{{ device.last_seen }}</td>
                     <td class="status-{{ device.status }}">{{ device.status }}</td>
-                    <td><button id="purple-button" onclick="window.location.href='/targeted_scan/{{ device.ip }}'">Rescan</button></td>
+                    <td>
+                        <div style="display: flex; flex-direction: column; gap: 5px;">
+                            <button id="purple-button" onclick="window.location.href='/targeted_scan/{{ device.ip }}'">Rescan</button>
+                            <button id="purple-button" onclick="window.location.href='/device_info/{{ device.ip }}'">Details</button>
+                        </div>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -57,11 +58,9 @@
             <thead>
                 <tr>
                     <th>IP Address</th>
-                    <th>MAC Address</th>
                     <th>Hostname</th>
                     <th>Vendor</th>
                     <th>Category</th>
-                    <th>Open Ports</th>
                     <th>Last Seen</th>
                     <th>Status</th>
                     <th>Action</th>
@@ -71,14 +70,17 @@
                 {% for device in semi_known_devices %}
                 <tr>
                     <td>{{ device.ip }}</td>
-                    <td>{{ device.mac }}</td>
                     <td>{{ device.hostname }}</td>
                     <td>{{ device.vendor }}</td>
                     <td>{{ device.category }}</td>
-                    <td>{{ device.open_ports }}</td>
                     <td>{{ device.last_seen }}</td>
                     <td class="status-{{ device.status }}">{{ device.status }}</td>
-                    <td><button id="purple-button" onclick="window.location.href='/targeted_scan/{{ device.ip }}'">Rescan</button></td>
+                    <td>
+                        <div style="display: flex; flex-direction: column; gap: 5px;">
+                            <button id="purple-button" onclick="window.location.href='/targeted_scan/{{ device.ip }}'">Rescan</button>
+                            <button id="purple-button" onclick="window.location.href='/device_info/{{ device.ip }}'">Details</button>
+                        </div>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -91,11 +93,8 @@
             <thead>
                 <tr>
                     <th>IP Address</th>
-                    <th>MAC Address</th>
-                    <th>Hostname</th>
                     <th>Vendor</th>
                     <th>Category</th>
-                    <th>Open Ports</th>
                     <th>Last Seen</th>
                     <th>Status</th>
                     <th>Action</th>
@@ -105,14 +104,17 @@
                 {% for device in unknown_devices %}
                 <tr>
                     <td>{{ device.ip }}</td>
-                    <td>{{ device.mac }}</td>
                     <td>{{ device.hostname }}</td>
                     <td>{{ device.vendor }}</td>
                     <td>{{ device.category }}</td>
-                    <td>{{ device.open_ports }}</td>
                     <td>{{ device.last_seen }}</td>
                     <td class="status-{{ device.status }}">{{ device.status }}</td>
-                    <td><button id="purple-button" onclick="window.location.href='/targeted_scan/{{ device.ip }}'">Rescan</button></td>
+                    <td>
+                        <div style="display: flex; flex-direction: column; gap: 5px;">
+                            <button id="purple-button" onclick="window.location.href='/targeted_scan/{{ device.ip }}'">Rescan</button>
+                            <button id="purple-button" onclick="window.location.href='/device_info/{{ device.ip }}'">Details</button>
+                        </div>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>

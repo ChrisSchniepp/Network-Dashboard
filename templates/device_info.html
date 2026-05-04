@@ -1,0 +1,25 @@
+{%- extends "layout.html" -%}
+
+{% block head %}
+    <title>Device Info</title>
+{% endblock %}
+
+{% block content %}
+    {% if device.hostname == "Unknown" %}
+        <h1>Device Info - Unknown Device</h1>
+    {% else %}
+        <h1>Device Info - {{ device.hostname }}</h1>
+    {% endif %}
+    <h3 class="status-{{ device.status }}" style="border: 4px solid {% if device.status == 'active' %}#39ff14{% else %}#ff0055{% endif %}; width: fit-content; margin: 0 auto; padding: 5px 15px;">{{ device.status }}</h3>
+    <p><strong>IP Address:</strong> {{ device.ip }}</p>
+    <p><strong>Hostname:</strong> {{ device.hostname }}</p>
+    <p><strong>Vendor:</strong> {{ device.vendor }}</p>
+    <p><strong>Category:</strong> {{ device.category }}</p>
+    <p><strong>Last Seen:</strong> {{ device.last_seen }}</p>
+    <p><strong>Status:</strong> {{ device.status }}</p>
+    <p><strong>Open Ports:</strong> {{ device.open_ports }}</p>
+    <p><strong>MAC Address:</strong> {{ device.mac }}</p>
+    <footer>
+        <button id="yellow-button" onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+    </footer>
+{% endblock %}

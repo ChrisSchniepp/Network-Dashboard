@@ -11,6 +11,13 @@
 </head>
 <body>
     <header>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                <li><a href="{{ url_for('mac_addresses') }}">MAC Addresses</a></li>
+                <li><a href="{{ url_for('open_ports') }}">Open Ports</a></li>
+            </ul>
+        </nav>
         <h2>Network Dashboard</h2>
     </header>
     

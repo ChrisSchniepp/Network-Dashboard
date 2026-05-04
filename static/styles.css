@@ -22,6 +22,38 @@ header h2, h1 {
     text-align: center;
 }
 
+/* Navigation Bar */
+nav {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+nav ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+}
+
+nav a {
+    text-decoration: none;
+    color: #00ffcc;
+    font-size: 1.2em;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 5px 10px;
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+nav a:hover {
+    color: #fcee0a;
+    border-bottom: 2px solid #fcee0a;
+    text-shadow: 0 0 10px #fcee0a;
+}
+
 main {
     width: 100%;
     max-width: 1200px;
@@ -82,14 +114,14 @@ tr:hover {
     background-color: transparent;
     color: #6b0fff;
     border: 2px solid #6b0fff;
-    padding: 12px 24px;
+    padding: 6px 12px;
     font-family: 'Share Tech Mono', monospace;
     font-size: 1.2em;
     text-transform: uppercase;
     cursor: pointer;
     box-shadow: 0 0 10px #6b0fff;
     transition: 0.3s;
-    margin: 20px 0;
+    margin: 10px 0;
 }
 
 #purple-button:hover {
