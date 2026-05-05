@@ -13,6 +13,15 @@ body {
     align-items: center;
 }
 
+header {
+    position: sticky;
+    top: 0;
+    background-color: #0a0a0c;
+    z-index: 1000;
+    width: 100%;
+    padding-top: 10px;
+}
+
 header h2, h1 {
     color: #ff0055;
     text-transform: uppercase;

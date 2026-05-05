@@ -120,9 +120,9 @@ def targeted_scan(ip):
 def dashboard():
     """dashboard route to display the devices in a simple HTML format."""
     conn = get_db_connection()
-    known_devices = conn.execute("SELECT * FROM devices WHERE hostname != 'Unknown' ORDER BY status ASC, ip COLLATE IP_CMP ASC").fetchall()
-    semi_known_devices = conn.execute("SELECT * FROM devices WHERE hostname = 'Unknown' AND vendor != '%Unknown%' ORDER BY status ASC, ip COLLATE IP_CMP ASC").fetchall()
-    unknown_devices = conn.execute("SELECT * FROM devices WHERE hostname = 'Unknown' AND vendor = 'Unknown' ORDER BY status ASC, ip COLLATE IP_CMP ASC").fetchall()
+    known_devices = conn.execute("SELECT * FROM devices LEFT JOIN aliases ON devices.id = aliases.id WHERE hostname != 'Unknown' ORDER BY status ASC, ip COLLATE IP_CMP ASC").fetchall()
+    semi_known_devices = conn.execute("SELECT * FROM devices LEFT JOIN aliases ON devices.id = aliases.id WHERE hostname = 'Unknown' AND vendor != '%Unknown%' ORDER BY status ASC, ip COLLATE IP_CMP ASC").fetchall()
+    unknown_devices = conn.execute("SELECT * FROM devices LEFT JOIN aliases ON devices.id = aliases.id WHERE hostname = 'Unknown' AND vendor = 'Unknown' ORDER BY status ASC, ip COLLATE IP_CMP ASC").fetchall()
     conn.close()
     
     router_url = os.environ.get('ROUTER_ADMIN_URL', '#')
@@ -132,14 +132,99 @@ def dashboard():
     return render_template('dashboard.html', known_devices=known_devices, semi_known_devices=semi_known_devices, unknown_devices=unknown_devices, router_url=router_url, twingate_url=twingate_url, nextdns_url=nextdns_url)
 
 
-@app.route('/device_info/<ip>', methods=['GET'])
-def device_info(ip):
+@app.route('/device_info/<ip>/add_alias', methods=['GET', 'POST'])
+def add_device_alias(ip):
     conn = get_db_connection()
     device = conn.execute("SELECT * FROM devices WHERE ip = ?", (ip,)).fetchone()
+
+    if request.method == 'POST':
+        # get form data
+        new_hostname_alias = request.form['alias']
+        new_category = request.form['alias_category']
+
+        ## Checking to see if device already has an alias in the same category, and if so, update it instead of adding a new one
+        existing_alias = conn.execute("SELECT * FROM aliases WHERE id = ?", (device['id'],)).fetchone()
+        new = 0
+        try:            
+            existing_alias_dict = dict(existing_alias)
+            new = 1
+        except:
+            existing_alias_dict = {}
+
+        if new_hostname_alias:
+            if new == 1:
+                conn.execute("UPDATE aliases SET user_hostname = ? WHERE id = ?", (new_hostname_alias, device['id']))
+                conn.commit()
+            else:
+                conn.execute("INSERT INTO aliases (id,user_hostname) VALUES (?,?)", (device['id'], new_hostname_alias))
+                conn.commit()
+
+        if new_category:
+            if new == 1:
+                conn.execute("UPDATE aliases SET user_category = ? WHERE id = ?", (new_category, device['id']))
+                conn.commit()
+            else:
+                conn.execute("INSERT INTO aliases (id,user_category) VALUES (?,?)", (device['id'], new_category))
+                conn.commit()
+
+        conn.close()
+        return redirect(url_for('device_info', ip=ip))
+    
     conn.close()
     if not device:
         return redirect(url_for('error_handler', message="Device not found."))
     return render_template('device_info.html', device=device)
+
+@app.route('/device_info/<ip>', methods=['GET'])
+def device_info(ip):
+    conn = get_db_connection()
+    device = conn.execute("SELECT * FROM devices WHERE ip = ?", (ip,)).fetchone()
+    alias = conn.execute("SELECT * FROM aliases WHERE id = ?", (device['id'],)).fetchone()
+    try:
+        alias_dict = dict(alias)
+    except:
+        alias_dict = {}
+    conn.close()
+    if not device:
+        return redirect(url_for('error_handler', message="Device not found."))
+    return render_template('device_info.html', device=device, alias=alias_dict)
+
+@app.route('/device_info/<ip>/delete_alias', methods=['GET', 'POST'])
+def delete_device_alias(ip):
+    conn = get_db_connection()
+    device = conn.execute("SELECT * FROM devices WHERE ip = ?", (ip,)).fetchone()
+
+    if request.method == 'POST':
+        # possible aliases
+        possible_aliases = ['user_hostname', 'user_category']
+
+        # get form data
+        alias_to_delete = request.form.to_dict()
+        
+        for key in alias_to_delete.keys():
+            if key not in possible_aliases:
+                return redirect(url_for('error_handler', message="Invalid alias category."))
+            else:
+                # Delete the alias
+                conn.execute("UPDATE aliases SET {} = NULL WHERE id = ? AND {} = ?".format(key, key), (device['id'], alias_to_delete[key]))
+                conn.commit()
+
+        conn.close()
+        return redirect(url_for('device_info', ip=ip))
+
+    conn.close()
+    if not device:
+        return redirect(url_for('error_handler', message="Device not found."))
+    
+    return redirect(url_for('device_info', ip=ip))
+
+######################
+## Network Map Page ##
+######################
+
+@app.route('/network_map', methods=['GET'])
+def network_map():
+    return render_template('network_map.html')
 
 ######################
 ## MAC Address Page ##

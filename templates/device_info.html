@@ -6,20 +6,88 @@
 
 {% block content %}
     {% if device.hostname == "Unknown" %}
-        <h1>Device Info - Unknown Device</h1>
+        {% if alias.user_hostname %}
+            <h1>Device Info - <span style="color:#6b0fff; text-shadow: 0 0 10px #6b0fff, 0 0 20px #6b0fff;">{{ alias.user_hostname }}</span></h1>
+        {% else %}
+            <h1>Device Info - Unknown Device</h1>
+        {% endif %}
     {% else %}
         <h1>Device Info - {{ device.hostname }}</h1>
     {% endif %}
     <h3 class="status-{{ device.status }}" style="border: 4px solid {% if device.status == 'active' %}#39ff14{% else %}#ff0055{% endif %}; width: fit-content; margin: 0 auto; padding: 5px 15px;">{{ device.status }}</h3>
-    <p><strong>IP Address:</strong> {{ device.ip }}</p>
-    <p><strong>Hostname:</strong> {{ device.hostname }}</p>
-    <p><strong>Vendor:</strong> {{ device.vendor }}</p>
-    <p><strong>Category:</strong> {{ device.category }}</p>
-    <p><strong>Last Seen:</strong> {{ device.last_seen }}</p>
-    <p><strong>Status:</strong> {{ device.status }}</p>
-    <p><strong>Open Ports:</strong> {{ device.open_ports }}</p>
-    <p><strong>MAC Address:</strong> {{ device.mac }}</p>
+    <form action="/device_info/{{ device.ip }}/add_alias" method="POST">
+        <p><strong>IP Address:</strong> {{ device.ip }}</p>
+        <div>
+            {% if alias.user_hostname %}
+                <p><strong>Hostname:</strong> <span style="color:#6b0fff">{{ alias.user_hostname }}</span>
+                    <button type="button" id="purple-button" onclick="document.getElementById('hostname-input-div').style.display='block'; this.style.display='none';" style="padding: 2px 8px; font-size: 0.8em; margin-left: 10px;">Update Alias</button>
+                    <button type="submit" form="delete-hostname-form" id="purple-button" style="padding: 2px 8px; font-size: 0.8em; margin-left: 10px;">Delete Alias</button>
+                </p>
+                <div id="hostname-input-div" style="display: none; margin-bottom: 10px;">
+                    <input type="text" id="alias" name="alias" placeholder="Enter hostname alias..." oninput="checkInputs()" style="padding: 5px; background: #111; color: #00ffcc; border: 1px solid #00ffcc; font-family: 'Share Tech Mono', monospace;">
+                </div>
+            {% else %}
+                <p><strong>Hostname:</strong> {{ device.hostname }}
+                    <button type="button" id="purple-button" onclick="document.getElementById('hostname-input-div').style.display='block'; this.style.display='none';" style="padding: 2px 8px; font-size: 0.8em; margin-left: 10px;">Add Alias</button>
+                </p>
+                <div id="hostname-input-div" style="display: none; margin-bottom: 10px;">
+                    <input type="text" id="alias" name="alias" placeholder="Enter hostname alias..." oninput="checkInputs()" style="padding: 5px; background: #111; color: #00ffcc; border: 1px solid #00ffcc; font-family: 'Share Tech Mono', monospace;">
+                </div>
+            {% endif %}
+        </div>
+        <p><strong>Vendor:</strong> {{ device.vendor }}</p>
+        <div>
+            {% if alias.user_category %}
+                <p><strong>Category:</strong> <span style="color:#6b0fff">{{ alias.user_category }}</span>
+                    <button type="button" id="purple-button" onclick="document.getElementById('category-input-div').style.display='block'; this.style.display='none';" style="padding: 2px 8px; font-size: 0.8em; margin-left: 10px;">Update Alias</button>
+                    <button type="submit" form="delete-category-form" id="purple-button" style="padding: 2px 8px; font-size: 0.8em; margin-left: 10px;">Delete Alias</button>
+                </p>
+                <div id="category-input-div" style="display: none; margin-bottom: 10px;">
+                    <input type="text" id="alias_category" name="alias_category" placeholder="Enter category alias..." oninput="checkInputs()" style="padding: 5px; background: #111; color: #00ffcc; border: 1px solid #00ffcc; font-family: 'Share Tech Mono', monospace;">
+                </div>
+            {% else %}
+                <p><strong>Category:</strong> {{ device.category }}
+                    <button type="button" id="purple-button" onclick="document.getElementById('category-input-div').style.display='block'; this.style.display='none';" style="padding: 2px 8px; font-size: 0.8em; margin-left: 10px;">Add Alias</button>
+                </p>
+                <div id="category-input-div" style="display: none; margin-bottom: 10px;">
+                    <input type="text" id="alias_category" name="alias_category" placeholder="Enter category alias..." oninput="checkInputs()" style="padding: 5px; background: #111; color: #00ffcc; border: 1px solid #00ffcc; font-family: 'Share Tech Mono', monospace;">
+                </div>
+            {% endif %}
+        </div>
+        <p><strong>Last Seen:</strong> {{ device.last_seen }}</p>
+        <p><strong>Status:</strong> {{ device.status }}</p>
+        <p><strong>Open Ports:</strong> {{ device.open_ports }}</p>
+        <p><strong>MAC Address:</strong> {{ device.mac }}</p>
+        
+        <div id="submit-aliases-div" style="display: none; margin-top: 20px;">
+            <button type="submit" id="yellow-button">Submit Aliases</button>
+        </div>
+    </form>
+
+    {% if alias.user_hostname %}
+    <form id="delete-hostname-form" action="/device_info/{{ device.ip }}/delete_alias" method="POST" style="display: none;">
+        <input type="hidden" name="user_hostname" value="{{ alias.user_hostname }}">
+    </form>
+    {% endif %}
+
+    {% if alias.user_category %}
+    <form id="delete-category-form" action="/device_info/{{ device.ip }}/delete_alias" method="POST" style="display: none;">
+        <input type="hidden" name="user_category" value="{{ alias.user_category }}">
+    </form>
+    {% endif %}
+
     <footer>
         <button id="yellow-button" onclick="window.location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
     </footer>
+
+    <script>
+        function checkInputs() {
+            const alias = document.getElementById('alias').value;
+            const category = document.getElementById('alias_category').value;
+            const submitDiv = document.getElementById('submit-aliases-div');
+            
+            // Show the submit button if either input field contains non-whitespace text
+            submitDiv.style.display = (alias.trim() !== '' || category.trim() !== '') ? 'block' : 'none';
+        }
+    </script>
 {% endblock %}

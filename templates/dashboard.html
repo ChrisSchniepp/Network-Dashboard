@@ -35,9 +35,17 @@
                 {% for device in known_devices %}
                 <tr>
                     <td>{{ device.ip }}</td>
-                    <td>{{ device.hostname }}</td>
+                    {% if device.user_hostname %}
+                        <td style="color:#6b0fff; text-shadow: 0 0 10px #6b0fff, 0 0 20px #6b0fff;">{{ device.user_hostname }}</td>
+                    {% else %}
+                        <td>{{ device.hostname }}</td>
+                    {% endif %}
                     <td>{{ device.vendor }}</td>
-                    <td>{{ device.category }}</td>
+                    {% if device.user_category %}
+                        <td style="color:#6b0fff; text-shadow: 0 0 10px #6b0fff, 0 0 20px #6b0fff;">{{ device.user_category }}</td>
+                    {% else %}
+                        <td>{{ device.category }}</td>
+                    {% endif %}
                     <td>{{ device.last_seen }}</td>
                     <td class="status-{{ device.status }}">{{ device.status }}</td>
                     <td>
@@ -70,9 +78,17 @@
                 {% for device in semi_known_devices %}
                 <tr>
                     <td>{{ device.ip }}</td>
-                    <td>{{ device.hostname }}</td>
+                    {% if device.user_hostname %}
+                        <td style="color:#6b0fff; text-shadow: 0 0 10px #6b0fff, 0 0 20px #6b0fff;">{{ device.user_hostname }}</td>
+                    {% else %}
+                        <td>{{ device.hostname }}</td>
+                    {% endif %}
                     <td>{{ device.vendor }}</td>
-                    <td>{{ device.category }}</td>
+                    {% if device.user_category %}
+                        <td style="color:#6b0fff; text-shadow: 0 0 10px #6b0fff, 0 0 20px #6b0fff;">{{ device.user_category }}</td>
+                    {% else %}
+                        <td>{{ device.category }}</td>
+                    {% endif %}
                     <td>{{ device.last_seen }}</td>
                     <td class="status-{{ device.status }}">{{ device.status }}</td>
                     <td>
@@ -104,9 +120,17 @@
                 {% for device in unknown_devices %}
                 <tr>
                     <td>{{ device.ip }}</td>
-                    <td>{{ device.hostname }}</td>
+                    {% if device.user_hostname %}
+                        <td style="color:#6b0fff; text-shadow: 0 0 10px #6b0fff, 0 0 20px #6b0fff;">{{ device.user_hostname }}</td>
+                    {% else %}
+                        <td>{{ device.hostname }}</td>
+                    {% endif %}
                     <td>{{ device.vendor }}</td>
-                    <td>{{ device.category }}</td>
+                    {% if device.user_category %}
+                        <td style="color:#6b0fff; text-shadow: 0 0 10px #6b0fff, 0 0 20px #6b0fff;">{{ device.user_category }}</td>
+                    {% else %}
+                        <td>{{ device.category }}</td>
+                    {% endif %}
                     <td>{{ device.last_seen }}</td>
                     <td class="status-{{ device.status }}">{{ device.status }}</td>
                     <td>

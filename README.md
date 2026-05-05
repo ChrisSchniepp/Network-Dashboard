@@ -39,3 +39,26 @@ ROUTER_ADMIN_URL=http://192.168.1.1
 TWINGATE_URL=https://XXXXX.twingate.com/networks/overview
 NEXTDNS_URL=https://my.nextdns.io/XXXXX/analytics
 ```
+
+## Database Schema
+
+```sql
+CREATE TABLE devices (
+id INTEGER PRIMARY KEY AUTOINCREMENT,
+hostname TEXT NOT NULL DEFAULT "Unknown",
+ip TEXT NOT NULL,
+vendor TEXT NOT NULL DEFAULT "Unknown",
+mac TEXT NOT NULL UNIQUE, 
+last_seen DATETIME DEFAULT (datetime('now')), 
+status TEXT DEFAULT "inactive", 
+category TEXT, 
+open_ports TEXT
+);
+
+CREATE TABLE aliases (
+id INTEGER NOT NULL,
+user_hostname TEXT,
+user_category TEXT,
+FOREIGN KEY (id) REFERENCES devices(id)
+);
+```
